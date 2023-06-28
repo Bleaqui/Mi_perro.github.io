@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda de Animales</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Agenda de Animales</h1>
+    <form id="animalForm">
+      <div class="form-group">
+        <label for="nombre">Nombre del animal:</label>
+        <input type="text" class="form-control" id="nombre" required>
+      </div>
+      <div class="form-group">
+        <label for="raza">Raza:</label>
+        <input type="text" class="form-control" id="raza" required>
+      </div>
+      <div class="form-group">
+        <label for="edad">Edad (años):</label>
+        <input type="number" class="form-control" id="edad" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+
+    <h2 class="mt-5">Animales registrados:</h2>
+    <ul id="animalList" class="list-group mt-3"></ul>
+  </div>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const animalForm = document.getElementById('animalForm');
+      const animalList = document.getElementById('animalList');
+
+      animalForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const nombre = document.getElementById('nombre').value;
+        const raza = document.getElementById('raza').value;
+        const edad = document.getElementById('edad').value;
+
+        const animal = {
+          nombre: nombre,
+          raza: raza,
+          edad: edad
+        };
+
+        if (localStorage.getItem('animales')) {
+          const animales = JSON.parse(localStorage.getItem('animales'));
+          animales.push(animal);
+          localStorage.setItem('animales', JSON.stringify(animales));
+        } else {
+          const animales = [animal];
+          localStorage.setItem('animales', JSON.stringify(animales));
+        }
+
+        updateAnimalList();
+        animalForm.reset();
+      });
+
+      function updateAnimalList() {
+        if (localStorage.getItem('animales')) {
+          const animales = JSON.parse(localStorage.getItem('animales'));
+          animalList.innerHTML = '';
+
+          animales.forEach(function(animal) {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.textContent = `Nombre: ${animal.nombre}, Raza: ${animal.raza}, Edad: ${animal.edad} años`;
+            animalList.appendChild(li);
+          });
+        }
+      }
+
+      updateAnimalList();
+    });
+  </script>
+</body>
+</html>
